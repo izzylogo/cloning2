@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Page</title>
+    <link
+      rel="stylesheet"
+      media="screen"
+      href="css/pages-21f7f68382ea8d79ff086834d0616e5067841bb7276d68e5eb3fc8faf91ab9e3.css"
+    />
+    <link rel="stylesheet" href="./css/checkout.css">
+    <style type="text/css">
+        :root {
+          --brand_primary: #2b3636;
+          --brand_secondary: #09a59a;
+          --brand_heading: #2b3636;
+          --brand_text: #2b3636;
+          --brand_navbar_text: #ffffff;
+          --brand_navbar_fixed_text: #ffffff;
+          --brand_homepage_heading: #ffffff;
+          --brand_course_heading: #ffffff;
+          --brand_video_player_color: #09a59a;
+          --favicon_url: ;
+          --font_family: Helvetica;
+        }
+    </style>
+    <style>
+      
+    </style>
+</head>
+<body>
+    <div class="checkout-body">
+        <header id="header" class="header header-sticky">
+            <!-- HEADER for Free Plan -->
+    
+            <!-- Navbar -->
+            <nav
+              class="navbar is-not-signed-in navbar-course-hero at-top"
+              id="navbar"
+              role="navigation"
+            >
+              <div class="navbar__header">
+                <!-- Site logo -->
+    
+                <a class="checkout-nav navbar__title" href="https://billstenzel.teachable.com">
+                  J. Bravo
+                </a>
+              </div>
+            </nav>
+          </header>
+          <div class="checkout-container">
+            <div class="checkout-form">
+              <div class="left-section">
+                <h3>Get started</h3>
+                <p>Providing your email allows us to send you everything you need for your purchase.</p>
+                <input type="email" id="email" placeholder="name@example.com" required />
+                <!-- <div class="checkbox-container">
+                  <input type="checkbox" id="promotions" />
+                  <label for="promotions">Yes, send me promotions and news (optional).</label>
+                </div>
+                <h3>Payment information</h3>
+                <input type="text" placeholder="Card number" disabled /> -->
+              </div>
+        
+              <div class="right-section">
+                <h3>Order summary</h3>
+                <div class="order-summary">
+                    <div class="order-summary-top">
+                        <img src="./images/checkout-image.jpg" alt="Futures Trading" id="summary-image" />
+                        <div class="order-summary-top-inner">
+                          <h4>FUTURES</h4>
+                          <h5>$1,000</h5>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="order-summary-bottom">
+                        <h4>Billed today (USD)</h4>
+                        <h4>$1,000.00</h4>
+                    </div>
+                </div>
+
+                <button class="buy-now-btn" onclick="submitForm()">Buy now</button>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function submitForm() {
+          const email = document.getElementById('email').value;
+          const promotions = document.getElementById('promotions').checked;
+    
+          if (!email) {
+            alert('Please enter a valid email address.');
+            return;
+          }
+    
+          fetch('http://localhost:5000/send-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email,
+              promotions,
+              image: document.getElementById('summary-image').src,
+            }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                alert('Email sent successfully!');
+              } else {
+                alert('Failed to send email.');
+              }
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+              alert('An error occurred. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
