@@ -55,12 +55,31 @@
                 <h3>Get started</h3>
                 <p>Providing your email allows us to send you everything you need for your purchase.</p>
                 <input type="email" id="email" placeholder="name@example.com" required />
-                <!-- <div class="checkbox-container">
+                <div class="checkbox-container">
                   <input type="checkbox" id="promotions" />
                   <label for="promotions">Yes, send me promotions and news (optional).</label>
                 </div>
-                <h3>Payment information</h3>
-                <input type="text" placeholder="Card number" disabled /> -->
+                <h3>Payment information.</h3>
+                <div class="crypto-payment">
+                    <div class="crypto-address">
+                        <p id="textToCopy">bc1qr6rvvlf87f938rg4eetd6lnfequjy3q8mq788w </p>
+                        <p>-</p>
+                        <p>  BTC</p>
+                        <span>
+                            <img class="copy-icon" onclick="copyToClipboard()" src="./images/copy-icon.png" alt="">
+                        </span>
+                    </div>
+                    <br>
+                    <div class="crypto-address">
+                        <p id="textToCopyTwo">0xf3A88883097c150f73e442EC9Fad922Ad73E82DC </p> 
+                        <p>-</p>
+                        <p>  ETH</p>
+                        <span>
+                            <img onclick="copyToClipboardTwo()" class="copy-icon" src="./images/copy-icon.png" alt="">
+                        </span>
+                    </div>
+                </div>
+                <p id="message" class="message">Copied to clipboard!</p>
               </div>
         
               <div class="right-section">
@@ -87,6 +106,32 @@
     </div>
 
     <script>
+
+        function copyToClipboard() {
+            const textToCopy = document.getElementById('textToCopy').textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const message = document.getElementById('message');
+                message.style.display = 'block';
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+        function copyToClipboardTwo() {
+            const textToCopy = document.getElementById('textToCopyTwo').textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const message = document.getElementById('message');
+                message.style.display = 'block';
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
         function submitForm() {
           const email = document.getElementById('email').value;
           const promotions = document.getElementById('promotions').checked;

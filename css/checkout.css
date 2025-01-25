@@ -121,6 +121,33 @@
   .buy-now-btn:hover {
     background-color: #0f766e;
   }
+
+  .crypto-address{
+    display: flex;
+    background-color: rgba(213, 212, 212, 0.228);
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 30px;
+    border-radius: 3px;
+    border: 1px solid grey;
+    padding: 10px;
+  }
+
+  .crypto-address p{
+    margin-bottom: 0px;
+  }
+
+  .copy-icon{
+    width: 20px;
+    cursor: pointer;
+  }
+
+  .message {
+    margin-top: 10px;
+    color: green;
+    display: none;
+    margin-bottom: 0px;
+}
   
   /* Media Queries for Responsive Design */
   @media (max-width: 1024px) { /* Tablet view */
