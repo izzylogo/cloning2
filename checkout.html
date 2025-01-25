@@ -80,6 +80,15 @@
                     </div>
                 </div>
                 <p id="message" class="message">Copied to clipboard!</p>
+
+                <div class="upload-container">
+                    <h1>Upload Image & Send Email</h1>
+                    <form id="imageForm">
+                        <input type="email" id="senderEmail" name="senderEmail" placeholder="Your Email" required>
+                        <input type="file" id="imageInput" name="image" accept="image/*" required>
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
               </div>
         
               <div class="right-section">
@@ -99,7 +108,7 @@
                     </div>
                 </div>
 
-                <button class="buy-now-btn" onclick="submitForm()">Buy now</button>
+                <!-- <button class="buy-now-btn" onclick="submitForm()">Buy now</button> -->
               </div>
             </div>
         </div>
@@ -132,38 +141,40 @@
             });
         }
 
-        function submitForm() {
-          const email = document.getElementById('email').value;
-          const promotions = document.getElementById('promotions').checked;
-    
-          if (!email) {
-            alert('Please enter a valid email address.');
-            return;
-          }
-    
-          fetch('http://localhost:5000/send-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email,
-              promotions,
-              image: document.getElementById('summary-image').src,
-            }),
-          })
-            .then((response) => {
-              if (response.ok) {
-                alert('Email sent successfully!');
-              } else {
-                alert('Failed to send email.');
-              }
-            })
-            .catch((error) => {
-              console.error('Error:', error);
-              alert('An error occurred. Please try again.');
-            });
-        }
+
+
+        document.getElementById('imageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+        
+            const formData = new FormData();
+            const senderEmail = document.getElementById('senderEmail').value;
+            const fileInput = document.getElementById('imageInput');
+        
+            if (fileInput.files.length > 0) {
+                formData.append('image', fileInput.files[0]);
+                formData.append('senderEmail', senderEmail);
+        
+                fetch('http://localhost:3000/send-email', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Email sent successfully!');
+                    } else {
+                        alert('Failed to send the email.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was an error while sending the email.');
+                });
+            } else {
+                alert('Please select an image.');
+            }
+        });
+        
     </script>
 </body>
 </html>

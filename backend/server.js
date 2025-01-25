@@ -1,44 +1,76 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
 const app = express();
+const port = 3000;
 
-app.use(bodyParser.json());
+// Set up storage configuration for multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
 
+const upload = multer({ storage: storage });
+
+// Set up the email transport (using Gmail in this example)
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Replace with your email provider
-  auth: {
-    user: 'your-email@gmail.com', // Your email address
-    pass: 'your-email-password', // Your email password (or app password)
-  },
+    service: 'gmail',
+    auth: {
+        user: 'omitiranisrael@gmail.com',
+        pass: 'israelogo', // Use App Password or environment variable
+    },
 });
 
-app.post('/send-email', (req, res) => {
-  const { email, promotions, image } = req.body;
+// Route to handle the image upload and send email
+app.post('/send-email', upload.single('image'), (req, res) => {
+    const imageFile = req.file;
+    const senderEmail = req.body.senderEmail;
 
-  const mailOptions = {
-    from: 'your-email@gmail.com',
-    to: email,
-    subject: 'Your Purchase Details',
-    html: `
-      <h1>Thank you for your purchase!</h1>
-      <p>Here is a summary of your order:</p>
-      <img src="${image}" alt="Order Summary" style="width: 100%; max-width: 400px;" />
-      <p>Promotions: ${promotions ? 'Yes' : 'No'}</p>
-    `,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send('Failed to send email.');
-    } else {
-      console.log('Email sent: ' + info.response);
-      res.status(200).send('Email sent successfully!');
+    if (!imageFile) {
+        return res.status(400).send({ success: false, message: 'No file uploaded.' });
     }
-  });
+
+    if (!senderEmail) {
+        return res.status(400).send({ success: false, message: 'Sender email is required.' });
+    }
+
+    const mailOptions = {
+        from: senderEmail,
+        to: 'omitiranisrael@gmail.com', // Your email
+        subject: `New Image from ${senderEmail}`,
+        text: `You have received a new image from ${senderEmail}.`,
+        attachments: [
+            {
+                filename: imageFile.originalname,
+                path: imageFile.path,
+            },
+        ],
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return res.status(500).send({ success: false, message: error.message });
+        }
+        res.status(200).send({ success: true, message: 'Email sent successfully!' });
+    });
 });
 
-app.listen(5000, () => {
-  console.log('Server running on http://localhost:5000');
+// Serve static files
+app.use(express.static('public'));
+
+// Create the uploads directory if it doesn't exist
+if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+}
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });
